@@ -125,8 +125,81 @@ abline(v = mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE) + sd(datW$TAVE[datW$siteN
        lwd = 3)
 
 #Question 4
-
-
-
-
+par(mfrow=c(2,2))
+#histogram for site 1 -- Aberdeen, WA
+hist(datW$TAVE[datW$siteN == 1],
+     freq=FALSE, 
+     main = paste(levels(datW$NAME)[1]),
+     xlab = "Average daily temperature (degrees C)", 
+     ylab="Relative frequency",
+     col="grey50",
+     border="white")
+abline(v = mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE), 
+       col = "tomato3",
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE) - sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE) + sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+#histogram for site 2 -- Livermore, CA
+hist(datW$TAVE[datW$siteN==2],
+     freq = FALSE,
+     main = paste(levels(datW$NAME)[2]),
+     xlab = "Average daily temperature (degrees C)", 
+     ylab="Relative frequency",
+     col="navy blue",
+     border="white")
+abline(v = mean(datW$TAVE[datW$siteN == 2],na.rm=TRUE), 
+       col = "tomato3",
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 2],na.rm=TRUE) - sd(datW$TAVE[datW$siteN == 2],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 2],na.rm=TRUE) + sd(datW$TAVE[datW$siteN == 2],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+#histogram for site 3 -- Mandan Experiment Station, ND
+hist(datW$TAVE[datW$siteN==3],
+     freq = FALSE,
+     main = paste(levels(datW$NAME)[3]),
+     xlab = "Average daily temperature (degrees C)", 
+     ylab="Relative frequency",
+     col="light green",
+     border="white")
+abline(v = mean(datW$TAVE[datW$siteN == 3],na.rm=TRUE), 
+       col = "tomato3",
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 3],na.rm=TRUE) - sd(datW$TAVE[datW$siteN == 3],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 3],na.rm=TRUE) + sd(datW$TAVE[datW$siteN == 3],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+#histogram for site 4 -- Mormon Flat, AZ
+hist(datW$TAVE[datW$siteN==4],
+     freq = FALSE,
+     main = paste(levels(datW$NAME)[4]),
+     xlab = "Average daily temperature (degrees C)", 
+     ylab="Relative frequency",
+     col="light blue",
+     border="white")
+abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE), 
+       col = "tomato3",
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE) - sd(datW$TAVE[datW$siteN == 4],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE) + sd(datW$TAVE[datW$siteN == 4],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
 
