@@ -354,3 +354,19 @@ threshold <- qnorm(0.90,
           sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
 #QUESTION 7
+hist(datW$PRCP[datW$siteN == 1],
+     freq = FALSE,
+     main = paste(levels(datW$NAME)[1]),
+     xlab = "Daily precipitation (mm)",
+     ylab = "Relative frequency",
+     col = "grey50",
+     border = "white")
+
+#QUESTION 8
+datW$year.Fac<-as.factor(datW$year)
+sumfun<-function(year, i){
+        yeardat<-which(datW$year==year)
+        yeardat<-datW[yeardat,]
+        sum(yeardat$PRCP[which(yeardat$siteN==i)],na.rm = TRUE)
+}
+
