@@ -354,6 +354,7 @@ threshold <- qnorm(0.90,
           sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
 #QUESTION 7
+par(mfrow=c(1,1))
 hist(datW$PRCP[datW$siteN == 1],
      freq = FALSE,
      main = paste(levels(datW$NAME)[1]),
@@ -363,10 +364,26 @@ hist(datW$PRCP[datW$siteN == 1],
      border = "white")
 
 #QUESTION 8
-datW$year.Fac<-as.factor(datW$year)
-sumfun<-function(year, i){
-        yeardat<-which(datW$year==year)
-        yeardat<-datW[yeardat,]
-        sum(yeardat$PRCP[which(yeardat$siteN==i)],na.rm = TRUE)
-}
+#precipitation by year and site
+datq8<-data.frame(aggregate(datW$PRCP, by=list(datW$NAME,datW$year), FUN="sum", na.rm=TRUE))
+colnames(datq8)<-c("Name","Year","AnnualPrecip")
+#adding a numeric column to reference sites more easily
+datq8$SiteN<-as.numeric(datq8$Name)
+#creating the histogram
+hist(datq8$AnnualPrecip[datq8$SiteN==1],
+     freq = FALSE,
+     main = paste(levels(datq8$Name)[1]),
+     xlab = "Annual precipitation (mm)",
+     ylab = "Relative frequency",
+     col = "grey50",
+     border = "white")
+
+
+#QUESTION 9
+#mean of annual precipitation for each site
+annualprecip<-aggregate(datq8$AnnualPrecip, by=list(datq8$Name), FUN="mean", na.rm=TRUE)
+colnames(annualprecip)<-c("Site Name","Annual Average Precipitation")
+annualprecip
+#mean of annual temperature for each site
+averageTemp
 
