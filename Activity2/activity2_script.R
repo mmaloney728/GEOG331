@@ -52,7 +52,7 @@ datW$year <- as.numeric(format(datW$dateF,"%Y"))
 char.vec <- c("Example", "character", "vector", "1", "27.4")
 numeric.vec <- c(2.1, 4, 6.3, -8, 10)
 integer.vec <- c(2L, 4L, 0L, -2L, 15L)
-#factor.vec <- c()
+factor.vec <- as.factor(c(1, "i", 2, "j", -3, "k"))
 
 
 
@@ -354,6 +354,7 @@ threshold <- qnorm(0.90,
           sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
 #QUESTION 7
+#making a histogram of daily precipitation
 par(mfrow=c(1,1))
 hist(datW$PRCP[datW$siteN == 1],
      freq = FALSE,
