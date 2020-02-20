@@ -126,6 +126,14 @@ points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
        col= "tomato3", pch=19)
 
 #QUESTION 5
+#It does not matter whether the variable lightscale is in the datW dataframe or not. 
+#it can still be used to subset vaues in datW because the points() argument uses the same x range as the precipitation values used from datW
+#lightscale is not part of datW, but the values in the lightscale vector come from values in datW, so it very easily could be
+#each number of lightscale matches up with the corresponding precipitation and decimal date value that is used to plot points 
+
+assert(length(datW$DD) == length(datW$precipitation), "error: unequal length")
+assert(length(datW$DD) == length(a), "error: unequal length")
+#This shows that the vectors are all the same length
 
 #filter out storms in wind and air temperature measurements
 # filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm.    
@@ -135,7 +143,12 @@ datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0,
 
 #QUESTION 6
 #removing suspect measurements
-
+plot(datW$DD, datW$wind.speed, pch=19, type="b", xlab="Day of Year", 
+     ylab="Wind Speed (m/s)")
+quantile(datW$wind.speed)
+#since none of these points appear unreasonable, we can begin to filter out values where there is lightning and high rain
+datW$wind.speedQ6 <- ifelse(datW$precipitation >= 2 & datW$lightning.acvitivy >0, NA,
+                            ifelse(datW$precipitation >5, NA, datW$wind.speed))
 #test using assert to verify that his filtered the data as expected
 
 #describe outcome
