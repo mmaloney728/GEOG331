@@ -1,4 +1,4 @@
-#create a function. The names of the arguements for your function will be in parentheses. 
+#create a function. The names of the arguements for your function will be in parentheses.
 #Everything in curly brackets will be run each time the function is run.
 assert <- function(statement,err.message){
   #if evaluates if a statement is true or false for a single item
@@ -40,9 +40,6 @@ colnames(datW) <-   colnames(sensorInfo)
 #preview data
 print(datW[1,])
 
-#QUESTION 3 
-#What is the difference btwn skip and nrows in these two read.csv commands?
-#what does header=FALSE do?
 
 #use install.packages to install lubridate
 #install.packages(c("lubridate"))
@@ -103,10 +100,7 @@ quantile(datW$air.tempQ1)
 #look at days with really low air temperature
 datW[datW$air.tempQ1 < 8,]  
 #look at days with really high air temperature
-datW[datW$air.tempQ1 > 33,] 
-
-#QUESTION 4
-#Are the extreme high and low values in this dataset reliably measured by the sensor? Explain your answer.
+datW[datW$air.tempQ1 > 33,]
 
 
 #plot precipitation and lightning strikes on the same plot
@@ -116,23 +110,18 @@ lightscale <- (max(datW$precipitation)/max(datW$lightning.acvitivy)) * datW$ligh
 #make it empty to start and add in features
 plot(datW$DD , datW$precipitation, xlab = "Day of Year", ylab = "Precipitation & lightning",
      type="n")
-#plot precipitation points only when there is precipitation 
+#plot precipitation points only when there is precipitation
 #make the points semi-transparent
 points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 0],
        col= rgb(95/255,158/255,160/255,.5), pch=15)        
 
-#plot lightning points only when there is lightning     
+#plot lightning points only when there is lightning    
 points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
        col= "tomato3", pch=19)
 
 #QUESTION 5
-#It does not matter whether the variable lightscale is in the datW dataframe or not. 
-#it can still be used to subset vaues in datW because the points() argument uses the same x range as the precipitation values used from datW
-#lightscale is not part of datW, but the values in the lightscale vector come from values in datW, so it very easily could be
-#each number of lightscale matches up with the corresponding precipitation and decimal date value that is used to plot points 
-
 assert(length(datW$DD) == length(datW$precipitation), "error: unequal length")
-assert(length(datW$DD) == length(a), "error: unequal length")
+assert(length(datW$DD) == length(lightscale), "error: unequal length")
 #This shows that the vectors are all the same length
 
 #filter out storms in wind and air temperature measurements
@@ -142,33 +131,90 @@ datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0,
                           ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
 
 #QUESTION 6
+#Repeating the code:
 #removing suspect measurements
-plot(datW$DD, datW$wind.speed, pch=19, type="b", xlab="Day of Year", 
-     ylab="Wind Speed (m/s)")
+plot(datW$DD, datW$wind.speed, pch=19, type="b", xlab="Day of Year",
+     ylab="Wind Speed (m/s)", main = "Wind Speed Original Plot")
 quantile(datW$wind.speed)
 #since none of these points appear unreasonable, we can begin to filter out values where there is lightning and high rain
 datW$wind.speedQ6 <- ifelse(datW$precipitation >= 2 & datW$lightning.acvitivy >0, NA,
                             ifelse(datW$precipitation >5, NA, datW$wind.speed))
-#test using assert to verify that his filtered the data as expected
-
-#describe outcome
+#test using assert to verify that his filtered the data as expected:
+assert(length(which(is.na(datW$wind.speed)=="TRUE")) == length(which(is.na(datW$wind.speedQ6)=="TRUE")), "error: unequal length")
 
 #plot with both lines and points of windspeed with the new data
+plot(datW$DD, datW$wind.speedQ6, pch=19, type="b", xlab="Day of Year",
+     ylab="Wind Speed (m/s)", main = "Wind Speed with New Data")
 
 #QUESTION 7
-#check that soil temp & moisture measurements are reliable in days leading up to soil sensor outage
-#explain reasoning, show code
+#first we want to get an idea of which days the soil sensor outage occurred so we can figure out which days are leading up to it
+min(datW$doy[which(is.na(datW$soil.moisture))])
+#now we can use these days to look at soil moisture and temperature leading up to the failure, as well as precipitation that affects soil moisture
+#and air temperature, which affects soil temperature
+plot(datW$DD[which(datW$doy==c(187,188,189,190,191))], datW$soil.moisture[which(datW$doy==c(187,188,189,190,191))],pch=19,
+     type="b", xlab="Day of Year", ylab="Soil Moisture and Precipitation")
+points(datW$DD[which(datW$doy==c(187,188,189,190,191))], datW$precipitation[which(datW$doy==c(187,188,189,190,191))],
+       col= "light blue", pch=15, type="p")
+
+legend(190, 0.123,legend=c("Soil Moisture", "Precipitation"),
+       col=c("black", "light blue"), pch = c(19,15))
+plot(datW$DD[which(datW$doy==c(187,188,189,190,191))], datW$air.tempQ2[which(datW$doy==c(187,188,189,190,191))],
+     col= "black", pch=15, type="b", ylab="Air and Soil Temperature", xlab = "Day of Year")  
+points(datW$DD[which(datW$doy==c(187,188,189,190,191))], datW$soil.temp[which(datW$doy==c(187,188,189,190,191))],
+       col= "tomato3", pch=19)
+legend(190, 12,legend=c("Air Temperature", "Soil Temperature"),
+       col=c("black", "tomato"), pch = c(15,19))
+
+quantile(datW$soil.moisture, na.rm = TRUE)
+min(datW$soil.moisture[which(datW$doy==c(187,188,189,190,191))])
+
 
 #QUESTION 8
 #table with avg air temp, wind speed, soil moisture, soil temp, total precip
-#how many observations 
-#time period of measurement
-#correct number decimal places that is within sensor error.
+#accuracies for rounding: 
+#air temp accuracy: p/m 0.6 deg C
+#wind speed accuracy: the greater of 0.3 m/s or 3% of measurement
+#soil moisture accuracy: 0.03 m^3/m^3
+#soil temp accuracy: p/m 1 degree C
+#precip accuracy: p/m 5% of measurement from 0 to 50 mm/h
+Q8dat <- c(round(mean(datW$air.tempQ2, na.rm = TRUE), 1),round(mean(datW$wind.speedQ6, na.rm = TRUE),1),
+           round(mean(datW$soil.moisture, na.rm = TRUE),2),
+           round(mean(datW$soil.temp, na.rm = TRUE),0), round(sum(datW$precipitation, na.rm = TRUE),0))
+#calculating number of observations for each category
+#should find the number of observations, subtracting the values that are NA
+obs <- c(length(datW$air.tempQ2)-length(which(is.na(datW$air.tempQ2))),
+         length(datW$wind.speedQ6)-length(which(is.na(datW$wind.speedQ6))),
+         length(datW$soil.moisture)-length(which(is.na(datW$soil.moisture))),
+         length(datW$soil.temp)-length(which(is.na(datW$soil.temp))),
+         length(datW$precipitation)-length(which(is.na(datW$precipitation))))
+
+#finding time period
+#we know that soil moisture and soil temperature have missing values after a certain date, so we need to consider those time periods
+#we know from question 7 that the soil sensor stopped working on day 192, so we will consider the time period to be up to day 191
+#the other categories lasted the entirety of the data set, so we can figure out the last day by finding the last entry
+time <- c(max(datW$doy)-datW$doy[1],max(datW$doy)-datW$doy[1], 191-datW$doy[1],
+          191-datW$doy[1], max(datW$doy)-datW$doy[1])
+
+Q8mat <- rbind(Q8dat,obs,time)
+Q8mat <- rbind(Q8dat, round(Q8mat[2:3,],0))
+
+colnames(Q8mat) <- c("Average Air Temperature", "Average Wind Speed", "Average Soil Moisture",
+                     "Average Soil Temperature", "Total Precipitation")
+rownames(Q8mat) <- c("Data", "Number of Observations", "Time Period (Number of Days)")
+Q8mat
 
 #QUESTION 9
+par(mfrow=c(2,2))
 #plot soil moisture
+plot(datW$DD, datW$soil.moisture, pch=19, type="b", xlab = "Day of Year",
+     ylab="Soil moisture (cm3 water per cm3 soil)", main = "Soil Moisture for All Observations")
 #plot air temp
+plot(datW$DD, datW$air.temperature, pch=19, type="b", xlab = "Day of Year",
+     ylab="Soil moisture (cm3 water per cm3 soil)", main = "Air Temperature for All Observations")
 #plot soil temp
+plot(datW$DD, datW$soil.temp, pch=19, type="b", xlab = "Day of Year",
+     ylab="Soil moisture (cm3 water per cm3 soil)", main = "Soil Temperature for All Observations")
 #plot precip
-#all with same x range
-#describe trends in a few sentences
+plot(datW$DD, datW$precipitation, pch=19, type="b", xlab = "Day of Year",
+     ylab="Soil moisture (cm3 water per cm3 soil)", main = "Precipitation for All Observations")
+
