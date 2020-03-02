@@ -175,7 +175,7 @@ par(mai=c(1,1,1,1))
 #make plot
 plot(aveF$doy,aveF$dailyAve, 
      type="l", 
-     xlab="Year", 
+     xlab="Month", 
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
      lwd=2,
      ylim=c(0,90),
@@ -188,7 +188,7 @@ polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
 )       
 lines(datD$decDay[which(datD$year==2017)], datD$discharge[which(datD$year==2017)],
       type = "l",
-      col="blue")
+      col="red")
 # change the x axis label so that they show each month instead of doy
 monthvec <- c(1,32,60,91,121,152,182,213,244,274,305,335,365)
 name <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"," ")
@@ -199,7 +199,7 @@ axis(2, seq(0,80, by=20),
      las = 2)#show ticks at 90 degree angle
 legend("topright", c("mean","1 standard deviation","2017 Observations"), #legend items
        lwd=c(3,NA),#lines
-       col=c("black",rgb(0.392, 0.584, 0.929,.2), "blue"),#colors
+       col=c("black",rgb(0.392, 0.584, 0.929,.2), "red"),#colors
        pch=c(NA,15, NA),#symbols
        bty="n")#no legend border
 
@@ -222,11 +222,11 @@ plot(datD$decYear, datD$discharge,
      xlab = "Date",
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
      lwd=2)
-points(full.meas$decYear, rep(0, length(full.meas$doy)), pch=19,
+points(full.meas$decYear, rep(-5, length(full.meas$doy)), pch=20,
        col="blue")
-legend("topright", c("Discharge Measurement", "Dates"),
+legend("topright", c("Discharge Measurement", "24 Hour Measurements"),
        lwd = c(3, NA),
-       pch=c(NA, 19),
+       pch=c(NA, 20),
        col=c("black", "blue"),
        bty="n")
 
@@ -268,13 +268,40 @@ for(i in 1:nrow(hydroP)){
 }
 
 #QUESTION 8
-#Choose another day to make a 2nd hydrograph during the winter
-#explain how you chose a time period
-#how do the hydrographs compare?
-#are there any limitations in interpreting hourly
-#why spikes in streamflow with no rain?
 
+#January 13 and 14, 2012: include full measurements and precipitation
+Q8hydroD <- datD[datD$doy >=13 & datD$doy <15 & datD$year == 2012,]
+Q8hydroP <- datP[datP$doy >=13 & datP$doy <15 & datP$year == 2012,]
 
+#min and max of discharge & precipitation:
+Q8yl <- floor(min(Q8hydroD$discharge))-1
+Q8yh <- ceiling(max(Q8hydroD$discharge))+1
+Q8pl <- 0
+Q8pm <- ceiling(max(Q8hydroP$HPCP))+.5
+#scale precipitation to fit
+Q8hydroP$pscale <- (((Q8yh-Q8yl)/(Q8pm-Q8pl)) * Q8hydroP$HPCP) + Q8yl
+
+par(mai=c(1,1,1,1))
+#make plot
+plot(Q8hydroD$decDay,
+     Q8hydroD$discharge,
+     type="l",
+     ylim=c(Q8yl,Q8yh),
+     lwd=2,
+     xlab="Day of year (2012)",
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
+#add bars to indicate precipitation 
+for(i in 1:nrow(Q8hydroP)){
+  polygon(c(Q8hydroP$decDay[i]-0.017,Q8hydroP$decDay[i]-0.017,
+            Q8hydroP$decDay[i]+0.017,Q8hydroP$decDay[i]+0.017),
+          c(Q8yl,Q8hydroP$pscale[i],Q8hydroP$pscale[i],Q8yl),
+          col=rgb(0.392, 0.584, 0.929,.2), border=NA)
+}
+legend("topright", c("Discharge Measurement","Precipitation Measurement"), #legend items
+       lwd=c(2,NA),#lines
+       col=c("black",rgb(0.392, 0.584, 0.929,.2)),#colors
+       pch=c(NA,15),#symbols
+       bty="n")#no legend border
 
 
 
@@ -290,12 +317,14 @@ ggplot(data= datD, aes(yearPlot,discharge)) +
 
 #QUESTION 9
 #make a violin plot by season for 2016 and 2017 separately
-#2016 plot
+#2016 plot 
+#wrong -- separate by season!
 ggplot(data=datD[which(datD$yearPlot=="2016"),], 
        aes(yearPlot, discharge))+
-        geom_violin()+
+        geom_violin(fill="lightgoldenrod1")+
         xlab("Year")+
-        ylab(expression(paste("Discharge ft"^"3 ","sec"^"-1")))
+        ylab(expression(paste("Discharge ft"^"3 ","sec"^"-1")))+
+        ggtitle("2016 Streamflow by Season ")
 #2017 plot
 ggplot(data=datD[which(datD$yearPlot=="2017"),], 
        aes(yearPlot, discharge))+
