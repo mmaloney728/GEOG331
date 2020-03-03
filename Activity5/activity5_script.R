@@ -318,19 +318,51 @@ ggplot(data= datD, aes(yearPlot,discharge)) +
 #QUESTION 9
 #make a violin plot by season for 2016 and 2017 separately
 #2016 plot 
-#wrong -- separate by season!
-ggplot(data=datD[which(datD$yearPlot=="2016"),], 
-       aes(yearPlot, discharge))+
-        geom_violin(fill="lightgoldenrod1")+
-        xlab("Year")+
-        ylab(expression(paste("Discharge ft"^"3 ","sec"^"-1")))+
-        ggtitle("2016 Streamflow by Season ")
+# find dates that seasons start in order to begin separating by season
+spring16start<-datD$decYear[which(datD$date=="3/19/2016")][1]
+summer16start<-datD$decYear[which(datD$date=="6/20/2016")][1]
+fall16start<-datD$decYear[which(datD$date=="9/22/2016")][1]
+winter16start<-datD$decYear[which(datD$date=="12/21/2016")][1]
+#separate data by season
+dat2016<-datD[which(datD$decYear>=2016 & datD$decYear<2017),]
+dat2016$season<-ifelse(dat2016$decYear>=spring16start & dat2016$decYear<summer16start,"Spring",
+                       ifelse(dat2016$decYear>=summer16start & dat2016$decYear<fall16start, "Summer",
+                              ifelse(dat2016$decYear>=fall16start & dat2016$decYear<winter16start,"Fall",
+                                     ifelse(dat2016$decYear>=winter16start & dat2016$decYear<2017,"Late 2016 Winter", "Early 2016 Winter"))))
+#set seasons as factors to control order of labels
+dat2016$season<-factor(dat2016$season, levels = c("Early 2016 Winter", "Spring", "Summer", "Fall", "Late 2016 Winter"))
+#make plot
+ggplot(data=dat2016,
+       aes(season, discharge))+
+  geom_violin(aes(fill=season))+
+  scale_fill_manual(values=c("slategray3","green4", "gold", "darkorange2", "slategray3" ))+
+  xlab("2016 Season")+
+  ylab(expression(paste("Discharge ft"^"3 ","sec"^"-1")))+
+  ggtitle("2016 Streamflow by Season ")
+
+
+
+
 #2017 plot
-ggplot(data=datD[which(datD$yearPlot=="2017"),], 
-       aes(yearPlot, discharge))+
-        geom_violin()+
-        xlab("Year")+
-        ylab(expression(paste("Discharge ft"^"3 ","sec"^"-1")))
-
-
+# find dates that seasons start in order to begin separating by season
+spring17start<-datD$decYear[which(datD$date=="3/20/2017")][1]
+summer17start<-datD$decYear[which(datD$date=="6/20/2017")][1]
+fall17start<-datD$decYear[which(datD$date=="9/22/2017")][1]
+winter17start<-datD$decYear[which(datD$date=="12/21/2017")][1]
+#separate data by season
+dat2017<-datD[which(datD$decYear>=2017 & datD$decYear<2018),]
+dat2017$season<-ifelse(dat2017$decYear>=spring17start & dat2017$decYear<summer17start,"Spring",
+                       ifelse(dat2017$decYear>=summer17start & dat2017$decYear<fall17start, "Summer",
+                              ifelse(dat2017$decYear>=fall17start & dat2017$decYear<winter17start,"Fall",
+                                     ifelse(dat2017$decYear>=winter17start & dat2017$decYear<2018,"Late 2017 Winter", "Early 2017 Winter"))))
+#set seasons as factors to control order of labels
+dat2017$season<-factor(dat2017$season, levels = c("Early 2017 Winter", "Spring", "Summer", "Fall", "Late 2017 Winter"))
+#make plot
+ggplot(data=dat2017,
+       aes(season, discharge))+
+  geom_violin(aes(fill=season))+
+  scale_fill_manual(values=c("slategray3","green4", "gold", "darkorange2", "slategray3" ))+
+  xlab("2017 Season")+
+  ylab(expression(paste("Discharge ft"^"3 ","sec"^"-1")))+
+  ggtitle("2017 Streamflow by Season ")
 
