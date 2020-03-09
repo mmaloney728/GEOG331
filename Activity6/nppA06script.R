@@ -119,3 +119,33 @@ plot(NDVIraster[[which(ndviYear==2015)]],axes=FALSE)
 plot(g2015p, add=TRUE, border="black", col=NA)
 
 
+#calculate area for all polygons
+#add directly into data table for each shapefile
+g1966p@data$a1966m.sq <- area(g1966p)
+g1998p@data$a1998m.sq <- area(g1998p)
+g2005p@data$a2005m.sq <- area(g2005p)
+g2015p@data$a2015m.sq <- area(g2015p)
+
+gAllp1 <- join(g1966p@data,g1998p@data, by="GLACNAME", type="full")
+gAllp2 <- join(gAllp1,g2005p@data, by="GLACNAME", type="full")
+gAll <- join(gAllp2,g2015p@data, by="GLACNAME", type="full")
+#plot areas for each glacier
+par(mfrow=c(1,1))
+plot(c(1966,1998,2005,2015), 
+     c(gAll$a1966m.sq[1],gAll$a1998m.sq[1], gAll$a2005m.sq[1],gAll$a2015m.sq[1]),
+     type="b", 
+     pch=19, col=rgb(0.5,0.5,0.5,0.5), xlim= c(1965,2016),
+     ylim=c(0,2000000),
+     ylab="Area of glacier (meters squared)",
+     xlab="Year")
+
+for(i in 2:39){
+  points(c(1966,1998,2005,2015), 
+         c(gAll$a1966m.sq[i],gAll$a1998m.sq[i], gAll$a2005m.sq[i],gAll$a2015m.sq[i]),
+         type="b", 
+         pch=19, col=rgb(0.5,0.5,0.5,0.5))
+}
+
+
+
+
