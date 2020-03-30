@@ -1,0 +1,407 @@
+field=g1966p@data$GLACNAME, background=0)
+glacZones <- buffRaster - glacRaster
+meanChange <- zonal(NDVIfit, #NDVI function to summarize#
+glacZones, #raster with zones#
+"mean")#function to apply
+head(meanChange)
+meanChangeNoZero<-meanChange[-1,]
+head(meanChangeNoZero)
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange,background=0)
+g2015p@data$meanChange<-meanChangeNoZero
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange,background=0)
+rastermeans
+glacRaster
+glacZones
+rastermeans@data
+head(rastermeans@data)
+str(rastermeans@data)
+rastermeans@data$GLACNAMES
+g2015p@data
+g2015p@data$meanChange
+g2015p@data$meanChange[2,]
+g2015p@data$meanChange[,2]
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange[,2],background=0)
+head(rastermeans@data)
+str(rastermeans@data)
+rastermeans@data
+plot(rastermeans)
+g2015p@data$meanChange[,2]
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange[,2],background=1)
+plot(rastermeans)
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange[,2],background=0)
+plot(rastermeans)
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange[,2],background=NA)
+plot(rastermeans)
+plot(g2015p, add=TRUE, border="black", col=NA)
+plot(rastermeans)
+plot(rastermeans, col=rainbow(100))
+library(RColorBrewer)
+my.palette <- brewer.pal(n = 20, name = "OrRd")
+my.palette <- brewer.pal(n = 9, name = "OrRd")
+plot(rastermeans, col=my.palette)
+plot(rastermeans)
+par(mfrow=c(1,2))
+plot(NDVIraster[[1]],axes=TRUE)
+plot(g1966, axes=TRUE)
+NDVIraster[[1]]
+NDVIraster[[1]]@data
+NDVIraster[[1]]@data$NDVI
+NDVIraster[[1]]@data$names
+g2015p@data
+gAll
+NDVIdiff <- list()#
+meanDiff <- numeric(0)#
+#loop through all NDVI years#
+for(i in 1:length(ndviYear)){#
+	#get raster values in the difference polygon#
+	NDVIdiff[[i]] <- extract(NDVIraster[[i]],diffPoly)[[1]]#
+	#calculate the mean of the NDVI values#
+	meanDiff[i] <- mean(NDVIdiff[[i]], na.rm=TRUE)#
+}#
+plot(ndviYear, meanDiff, type="b",#
+xlab="Year",#
+ylab="Average NDVI (unitless)",#
+pch=19)
+diffPoly
+diffPoly <- gDifference(g1966p, g2015p)
+plot(diffPoly)
+NDVIdiff <- list()#
+meanDiff <- numeric(0)#
+#loop through all NDVI years#
+for(i in 1:length(ndviYear)){#
+	#get raster values in the difference polygon#
+	NDVIdiff[[i]] <- extract(NDVIraster[[i]],diffPoly)[[1]]#
+	#calculate the mean of the NDVI values#
+	meanDiff[i] <- mean(NDVIdiff[[i]], na.rm=TRUE)#
+}#
+plot(ndviYear, meanDiff, type="b",#
+xlab="Year",#
+ylab="Average NDVI (unitless)",#
+pch=19)
+g1966p
+join(NDVIraster[[1]],NDVIraster[[2]],by="GLACNAME",type="full")
+plot(NDVIraster[[13]], axes=FALSE, box=FALSE)
+par(mfrow=c(1,1))
+plot(NDVIraster[[13]], axes=FALSE, box=FALSE)
+plot(diffPoly,col="black",border=NA,add=TRUE)
+largestploss<-min(g2015p@data$pchange.area)#
+g2015p@data$GLACNAME[which(g2015p@data$pchange.area==largestploss)]#
+1-largestploss
+gAll[which(gAll$GLACNAME=="Boulder Glacier"),c("X_COORD","Y_COORD")]
+par(mai=c(1,1,1,1))
+par(col.axis="white", col.lab="white", tck=0)
+plotRGB(rgbL, ext=c(270500,277400,5423830,5430730), stretch="lin", axes=TRUE, main="Boulder Glacier: 84.72% loss")
+box(col="white")#
+plot(g1966, col="palegreen2", border=NA, add=TRUE)#
+plot(g1998, col="royalblue3", add=TRUE, border=NA)#
+plot(g2005, col="darkgoldenrod4", add=TRUE, border=NA)#
+plot(g2015, col="tomato3", add=TRUE, border=NA)
+?rasterize
+rasterize(NDVIraster[[1:2]],NDVIraster[[1]],field=NDVIraster[[1:2]],background=0)
+merge(NDVIraster[[1]],NDVIraster[[2]])
+rasterold<-NDVIraster[[1]]
+for(i in 1:(length(ndviYear)-1)){#
+	rasterold<-merge(rasterold, NDVIraster[[i+1]])#
+}
+AllNDVI<-NDVIraster[[1]]#
+for(i in 1:(length(ndviYear)-1)){#
+	AllNDVI<-merge(AllNDVI, NDVIraster[[i+1]])#
+}
+AllNDVI
+gAll
+plot(AllNDVI)
+mean(AllNDVI)
+AllNDVI@data
+mean(AllNDVI@data,na.rm=TRUE)
+mean(AllNDVI@data, rm.na=TRUE)
+mean(AllNDVI@data$values,na.rm=TRUE)
+AllNDVI@data
+AllNDVI@data$values
+mean(AllNDVI@data)
+mean(AllNDVI@data,na.rm=TRUE)
+?mean
+?extract
+mean(NDVIraster[[1]],na.rm=TRUE)
+mean(NDVIraster[[1]]@data,na.rm=TRUE)
+NDVIraster[[1]]
+NDVIraster[[1]]@data
+NDVIraster[[1]]@values
+g2015p@data$NDVIcol <- ifelse(g2015p@data$NDVImean<0.4,"blue","red")
+g2015p@data
+AllNDVI
+g2015p
+g1966p
+glacier500m
+g2015
+NDVIstack
+NDVIstack@names
+NDVIstack@data
+NDVIstack[[1]]
+NDVIstack[[1]]@data
+?mean
+mean(1:2)
+?extract
+extract(NDVIstack, timeT)
+NDVIstack
+NDVIstack[1]
+NDVIstack[[1]]
+NDVIstack[[1:14]]
+NDVIstack[2]
+NDVIstack[3]
+NDVIstack[355]
+NDVIstack[421]
+NDVIstack[148681]
+NDVIstack[148680]
+NDVIstack[1486]
+timeT
+mean(NDVIstack)
+lm(NDVIstack~timeT)
+mean(NDVIstack)
+mean(NDVIstack)[1]
+mean(NDVIstack, na.rm=TRUE)[1]
+mean(NDVIstack, na.rm=TRUE)[2]
+mean(NDVIstack, na.rm=TRUE)[3]
+mean(NDVIstack, na.rm=TRUE)[1:100]
+mean(NDVIstack)[1:100]
+mean(NDVIstack)[[1]]
+mean(NDVIstack)[[2]]
+NDVIstack
+r <- raster(ncol=5, nrow=5)
+r
+r[]
+r[]<-1
+s<-stack(r,r+1)
+r[]
+r[1]
+r[2]
+r[[2]]
+plot(mean(NDVIstack)
+)
+par(mfrow=c(1,2))
+plot(mean(NDVIstack))
+plot(NDVIraster[[1]])
+par(mfrow=c(1,2))
+plot(NDVIraster[[1]])
+plot(NDVIraster[[13]])
+zonal(mean(NDVIstack),glacZones,"mean")
+NDVIfit
+calc(NDVIstack,"mean")
+calc(NDVIstack,mean)
+NDVImean<-calc(NDVIstack,mean)
+plot(NDVImean)
+NDVImean<-calc(NDVIstack,mean, na.rm=TRUE)
+plot(NDVImean)
+spplot(g2015p@data$meanChange)
+spplot(g2015p,"pchange.area")
+zonal(NDVImean,glacZones,"mean")
+totalMean<-zonal(NDVImean,glacZones,"mean")
+?spplot
+spplot(g2015p)
+spplot(g2015p,"pchange.area")
+spplot(g2015p,"meanChange")
+spplot(g2015p,"pchange.area")
+g2015p@data$meanChange
+meanChangeNoZero
+g2015p@data
+spplot(g2015p,"meanChange.mean")
+meanChangeNoZero[,2]
+g2015p@data$meanChange<-meanChangeNoZero[,2]
+g2015p@data
+spplot(g2015p,"meanChange")
+?spplot
+spplot(g2015p,"meanChange",col="transparent")
+totalMean
+NDVImeanpp<-calc(NDVIstack,mean, na.rm=TRUE)
+totalMean<-zonal(NDVImeanpp,glacZones,"mean")
+#install.packages(c("raster","sp","rgdal","rgeos","plyr"))#
+library(raster)#
+library(sp)#
+library(rgdal)#
+library(rgeos)#
+library(plyr)#
+#read in shapefiles#
+#readOGR in rgdal does this#
+g1966 <- readOGR("~/Downloads/mmaloney/a06/GNPglaciers/GNPglaciers_1966.shp")#
+plot(g1966, col="black", axes=TRUE)#
+str(g1966)#
+g1998 <- readOGR("~/Downloads/mmaloney/a06/GNPglaciers/GNPglaciers_1998.shp")#
+g2005 <- readOGR("~/Downloads/mmaloney/a06/GNPglaciers/GNPglaciers_2005.shp")#
+g2015 <- readOGR("~/Downloads/mmaloney/a06/GNPglaciers/GNPglaciers_2015.shp")#
+str(g2015)#
+#data stores all accompanying info/measurements for each spatial object#
+head(g2015@data)#
+#polygons stores the coordinates for drawing the polygons#
+#coordinates are connect-the-dots#
+g2015@polygons[[1]]#
+g1966@proj4string#
+#QUESTION 1
+g2015@data$GLACNAME <- ifelse(g2015@data$GLACNAME == "North Swiftcurrent Glacier",#
+                              "N. Swiftcurrent Glacier",#
+                              ifelse(   g2015@data$GLACNAME ==  "Miche Wabun", #
+                                        "Miche Wabun Glacier",#
+                                        as.character(g2015@data$GLACNAME)))
+#raster data - grid of cells#
+#images measured with sensors - red,green,blue light up to atmosphere#
+#if you put them together it will look like a photograph#
+#read in rgb imagery from landsat#
+redL <- raster("~/Downloads/mmaloney/a06/glacier_09_05_14/l08_red.tif")#
+greenL <- raster("~/Downloads/mmaloney/a06/glacier_09_05_14/l08_green.tif")#
+blueL <- raster("~/Downloads/mmaloney/a06/glacier_09_05_14/l08_blue.tif")#
+#
+#check coordinate system#
+redL@crs#
+#
+#make a brick that stacks all layers#
+# stack is faster if working from a local file#
+rgbL <- brick(redL, greenL, blueL)
+ndviYear <- seq(2003,2016)#
+#
+#read all files into a list#
+NDVIraster <- list() #
+for(i in 1:length(ndviYear)){#
+    NDVIraster[[i]] <- raster(paste0("~/Downloads/mmaloney/a06/NDVI/NDVI_",ndviYear[i],".tif"))#
+}
+#spTransform(file to project, new coordinate system)#
+g1966p <- spTransform(g1966,NDVIraster[[1]]@crs)#
+g1998p <- spTransform(g1998,NDVIraster[[1]]@crs)#
+g2005p <- spTransform(g2005,NDVIraster[[1]]@crs)#
+g2015p <- spTransform(g2015,NDVIraster[[1]]@crs)
+#calculate area for all polygons#
+#add directly into data table for each shapefile#
+g1966p@data$a1966m.sq <- area(g1966p)#
+g1998p@data$a1998m.sq <- area(g1998p)#
+g2005p@data$a2005m.sq <- area(g2005p)#
+g2015p@data$a2015m.sq <- area(g2015p)#
+#
+gAllp1 <- join(g1966p@data,g1998p@data, by="GLACNAME", type="full")#
+gAllp2 <- join(gAllp1,g2005p@data, by="GLACNAME", type="full")#
+gAll <- join(gAllp2,g2015p@data, by="GLACNAME", type="full")
+g2015p@data$pchange.area<-gAll$a2015m.sq/gAll$a1966m.sq
+diffPoly <- gDifference(g1966p, g2015p)
+largestploss<-min(g2015p@data$pchange.area)#
+g2015p@data$GLACNAME[which(g2015p@data$pchange.area==largestploss)]#
+1-largestploss
+gAll[which(gAll$GLACNAME=="Boulder Glacier"),c("X_COORD","Y_COORD")]
+NDVIdiff <- list()#
+meanDiff <- numeric(0)#
+#loop through all NDVI years#
+for(i in 1:length(ndviYear)){#
+	#get raster values in the difference polygon#
+	NDVIdiff[[i]] <- extract(NDVIraster[[i]],diffPoly)[[1]]#
+	#calculate the mean of the NDVI values#
+	meanDiff[i] <- mean(NDVIdiff[[i]], na.rm=TRUE)#
+}#
+plot(ndviYear, meanDiff, type="b",#
+xlab="Year",#
+ylab="Average NDVI (unitless)",#
+pch=19)#
+#
+#designate that NDVIraster list is a stack#
+NDVIstack <- stack(NDVIraster)#
+#set up lm function to apply to every cell#
+#w
+timeT <- ndviYear#
+fun <- function(x) {#
+	if(is.na(x[1])){#
+		NA}else{#
+			#fit a regression and extract a slope#
+			lm(x ~ timeT)$coefficients[2] }}#
+#apply the slope function to the rasters		#
+NDVIfit <- calc(NDVIstack, fun)#
+#plot the change in NDVI#
+plot(NDVIfit, axes=FALSE)
+#buffer glaciers#
+glacier500m <- gBuffer(g1966p, #data to buffer #
+byid=TRUE, #keeps original shape id#
+width=500) #width in coordinate system units#
+#
+#convert to a raster#
+buffRaster <- rasterize(glacier500m,#vector to convert to raster#
+NDVIraster[[1]], #raster to match cells and extent#
+field=glacier500m@data$GLACNAME, #field to convert to raster data#
+background=0) #background value for missing data#
+plot(buffRaster)
+#rasterize glaciers#
+glacRaster <- rasterize(g1966p, NDVIraster[[1]],#
+field=g1966p@data$GLACNAME, background=0)#
+#subtract buffer from original glacier#
+glacZones <- buffRaster - glacRaster#
+plot(glacZones)
+meanChange <- zonal(NDVIfit, #NDVI function to summarize#
+glacZones, #raster with zones#
+"mean")#function to apply#
+head(meanChange)
+meanChangeNoZero<-meanChange[-1,]#
+#add to 2015 data#
+g2015p@data$meanChange<-meanChangeNoZero[,2]#
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange[,2],background=NA)#
+plot(rastermeans)#
+#plot(g2015p, add=TRUE, border="black", col=NA)
+NDVImeanpp<-calc(NDVIstack,mean, na.rm=TRUE)#
+totalMean<-zonal(NDVImeanpp,glacZones,"mean")
+plot(totalMean)
+totalMean
+spplot(g2015p@data, "totalMean")
+spplot(g2015p@data,"meanChange")
+rastermeans
+meanChangeNoZero<-meanChange[-1,]#
+#add to 2015 data#
+g2015p@data$meanChange<-meanChangeNoZero[,2]#
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange[,2],background=NA)#
+plot(rastermeans)#
+#plot(g2015p, add=TRUE, border="black", col=NA)
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange[,2],background=NA)
+g2015p@data$meanChange<-meanChangeNoZero[,2]
+meanChangeNoZero
+rastermeans<-rasterize(g2015p,NDVIraster[[1]],field=g2015p@data$meanChange,background=NA)
+plot(rastermeans)
+spplot(rastermeans)
+spplot(g1966p,"GLACNAMES")
+spplot(g1966p,"meanChange")
+spplot(g2015p,"meanChange")
+spplot(g2015p,"meanChange",col="transparent")
+NDVImeanpp
+totalMean
+totalMean<-totalMean[,2]
+totalMean
+totalMean<-zonal(NDVImeanpp,glacZones,"mean")
+totalMean<-totalMean[-1,]
+totalMean
+NDVImeanpp
+spplot(NDVImeanpp)
+NDVImeanpp@data$zonalmeans<-totalMean
+g2015p
+rastermean<-spTransform(NDVImeanpp,NDVIraster[[1]]@crs)
+NDVImeanpp#zonalmeans<-totalMean
+NDVImeanpp$zonalmeans<-totalMean
+glacier500m2015 <- gBuffer(g2015p, #data to buffer #
+byid=TRUE, #keeps original shape id#
+width=500) #width in coordinate system units
+buffRaster2015 <- rasterize(glacier500m2015,#vector to convert to raster#
+NDVIraster[[1]], #raster to match cells and extent#
+field=glacier500m2015@data$GLACNAME, #field to convert to raster data#
+background=0) #background value for missing data#
+plot(buffRaster2015)
+plot(buffRaster)
+plot(NDVImeanpp)
+spplot(NDVImeanpp)
+spplot(NDVImeanpp)
+plot(NDVImeanpp)
+plot(NDVImeanpp)
+plot(NDVImeanpp,"zonalmeans")
+totalMean
+g2015p@data$totalMean<-totalMean
+spplot(g2015p,"totalMean")
+spplot(g2015p,"meanChange",col="transparent")
+plotRGB(rgbL, stretch="lin", axes=TRUE)
+plot(g1966, col="tan3", border=NA, add=TRUE)
+plot(g1998, col="royalblue3", add=TRUE, border=NA)
+plot(g2005, col="darkgoldenrod4", add=TRUE, border=NA)
+plot(g2015, col="tomato3", add=TRUE, border=NA)
+plotRGB(rgbL, ext=c(289995,310000,5371253,5400000), stretch="lin")
+plot(g1966, col="palegreen2", border=NA, add=TRUE)
+plot(g1998, col="royalblue3", add=TRUE, border=NA)
+plot(g2005, col="darkgoldenrod4", add=TRUE, border=NA)
+plot(g2015, col="tomato3", add=TRUE, border=NA)
+plot(buffRaster2015)
+spplot(NDVImeanpp)
