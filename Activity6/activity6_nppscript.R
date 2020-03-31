@@ -258,13 +258,11 @@ spplot(g2015p,"meanChange",col="transparent")
 #QUESTION 11
 # mean NDVI through all years per pixel
 NDVImeanpp<-calc(NDVIstack,mean, na.rm=TRUE) 
-spplot(NDVImeanpp)
 # mean of each zone (glacier)
 totalMean<-zonal(NDVImeanpp,glacZones,"mean")
 # remove zone zero
 g2015p@data$NDVImean<-totalMean[-1,2]
 
-colorR <- brewer.pal(4, "PuOr")
 colorR <- c("#3333FF", "#00CCFF", "#FF3300", "#000033")
 g2015p@data$NDVIcol <- ifelse(g2015p@data$NDVImean<0.2, colorR[1],
 	ifelse(g2015p@data$NDVImean>=0.2 & g2015p@data$NDVImean<0.4, colorR[2],
