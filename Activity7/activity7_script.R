@@ -169,6 +169,7 @@ rf.grid <- expand.grid(mtry=1:sqrt(9)) # number of variables available for split
 #now train the model with our training dataset through the caret package
 # Train the random forest model to the Sentinel-2 data
 #note that caret:: will make sure we use train from the caret package
+trainD <- na.omit(trainD) # 3 NAs
 rf_model <- caret::train(x = trainD[,c(5:13)], #digital number data
                          y = as.factor(trainD$landcID), #land class we want to predict
                          method = "rf", #use random forest
@@ -177,7 +178,6 @@ rf_model <- caret::train(x = trainD[,c(5:13)], #digital number data
                          tuneGrid = rf.grid) #parameter tuning grid
 #check output
 rf_model
-### NOT WORKING ###
 
 # Change name in raster stack to match training data
 names(allbandsCloudf) <- c("B2","B3","B4","B5","B6","B7","B8","B11","B12")
@@ -216,7 +216,9 @@ rf_errorM$overall
 
 # QUESTION 2
 # what landclasses have the highest rates of misclassification?
+ # agriculture has the highest rate of misclassification. it is misclassified about 27% of the time, while the others are less than 10%. 
 # what sort of bias would this introduce if you used these predictions in an analysis
+ # this would bias the data in that it would predict a lot less agricultural land than there actually is
 
 #Neural Networks approach
 #set up grid
@@ -283,19 +285,30 @@ freq(rf_prediction)
 
 #QUESTION 4
 # knowing each cell is 20x20m, what is the difference in area predicted to be algal blooms in each method?
+(freq(nnet_prediction)[1,2]*400)-(freq(rf_prediction)[1,2]*400)
+	# the difference in area is 24243200 more predicted algae in the neural network method
 # which method predicts a higher area of algal blooms?
+
 
 #QUESTION 5
 # create a raster that shows whether neural network and random forest predictions agree or disagree?
 # describe the spatial patterns you observe
 # where are these areas prone to disagreement between predictions
 
+diffRaster<-rf_prediction==nnet_prediction
+plot(diffRaster, col=c("firebrick","darkolivegreen2"), legend=FALSE, axes=FALSE)
+legend("bottomleft", legend=c("Predictions Disagree","Predictions Agree"), fill=c("firebrick", "darkolivegreen2"))
+
+# the predictions are mainly the same for the two methods in the lake, except for some places where the algae seems to be bordered. the majority of disagreement is on land and it is frequent. 
+
 #QUESTION 6
+rf_errorM$table
+nn_errorM$table
 # what is the producers and users accuracy for algal blooms for both methods?
 # what is the producers and users accuracy for agriculture for both methods?
 
 #QUESTION 7
-# algal blooms are prone to occur in areas where sunlight, stagnant water, and excess nutrient inputs can promote growth. Visually, do you think the landcover aroudn the lake contributes to the algal blooms? 
+# algal blooms are prone to occur in areas where sunlight, stagnant water, and excess nutrient inputs can promote growth. Visually, do you think the landcover around the lake contributes to the algal blooms? 
 # explain your answer
 # how would answer this question quantitatively using spatial analysis techniques?
 
