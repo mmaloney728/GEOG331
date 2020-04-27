@@ -84,7 +84,7 @@ plotRGB(allbandsCloudf,r=4, g=3, b=2,
 # describe the differences in reflected/emitted light across the land surface. what are some major differences that you notice in the different landcover classes?
 
 #set seed so samples always the same
-set.seed(12153)
+set.seed(50)
 
 #make a vector that indicates which of our our 120 points are going to be training vs validation data for each point.
 #randomly select 
@@ -94,20 +94,17 @@ algData <- rep("train",120)
 #randomly replace half of the data to be validating data
 algData[algSamp] <- "valid"
 
-
 waterSamp <- sort(sample(seq(1,120),60))
 #set up vector for data type
 waterData <- rep("train",120)
 #randomly replace half of the data to be validating data
 waterData[waterSamp] <- "valid"
 
-
 agriSamp  <- sort(sample(seq(1,120),60))
 #set up vector for data type
 agriData <- rep("train",120)
 #randomly replace half of the data to be validating data
 agriData[agriSamp] <- "valid"
-
 
 builtSamp  <- sort(sample(seq(1,120),60))
 #set up vector for data type
@@ -120,7 +117,6 @@ forestSamp  <- sort(sample(seq(1,120),60))
 forestData <- rep("train",120)
 #randomly replace half of the data to be validating data
 forestData[forestSamp] <- "valid"
-
 
 wetlandsSamp  <- sort(sample(seq(1,120),60))
 #set up vector for data type
@@ -170,7 +166,6 @@ rf.grid <- expand.grid(mtry=1:sqrt(9)) # number of variables available for split
 # Train the random forest model to the Sentinel-2 data
 #note that caret:: will make sure we use train from the caret package
 trainD <- na.omit(trainD) # 3 NAs
-set.seed(12153)
 rf_model <- caret::train(x = trainD[,c(5:13)], #digital number data
                          y = as.factor(trainD$landcID), #land class we want to predict
                          method = "rf", #use random forest
@@ -225,7 +220,6 @@ rf_errorM$overall
 #set up grid
 nnet.grid <- expand.grid(size = seq(from = 16, to = 28, by = 2), # number of neurons units in the hidden layer 
                         decay = seq(from = 0.1, to = 0.6, by = 0.1)) # regularization parameter to avoid over-fitting 
-set.seed(12153)
 nnet_model <- caret::train(x = trainD[,c(5:13)], y = as.factor(trainD$landcID),
                            method = "nnet", metric="Accuracy", trainControl = tc, tuneGrid = nnet.grid,
                            trace=FALSE)
@@ -315,9 +309,5 @@ nn_errorM$table
 #QUESTION 9
 # this type of prediction can only classify algal growth from a satellite measurement. what might be some of the issues with relying on satellites to observe the presence of algal blooms? 
 # what data and approaches might you use to predict whether an algal bloom is expected to occur in the future
-
-
-
-
 
 
