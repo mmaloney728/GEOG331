@@ -170,6 +170,7 @@ rf.grid <- expand.grid(mtry=1:sqrt(9)) # number of variables available for split
 # Train the random forest model to the Sentinel-2 data
 #note that caret:: will make sure we use train from the caret package
 trainD <- na.omit(trainD) # 3 NAs
+set.seed(12153)
 rf_model <- caret::train(x = trainD[,c(5:13)], #digital number data
                          y = as.factor(trainD$landcID), #land class we want to predict
                          method = "rf", #use random forest
@@ -224,6 +225,7 @@ rf_errorM$overall
 #set up grid
 nnet.grid <- expand.grid(size = seq(from = 16, to = 28, by = 2), # number of neurons units in the hidden layer 
                         decay = seq(from = 0.1, to = 0.6, by = 0.1)) # regularization parameter to avoid over-fitting 
+set.seed(12153)
 nnet_model <- caret::train(x = trainD[,c(5:13)], y = as.factor(trainD$landcID),
                            method = "nnet", metric="Accuracy", trainControl = tc, tuneGrid = nnet.grid,
                            trace=FALSE)
@@ -273,9 +275,8 @@ fill=landclass$cols, bty="n")
 mtext("Neural network", side=3,cex=2, line=-5)
 
 #QUESTION 3
-# show both maps from your classification outcome in your document and include confusion matrices. 
-# describe the spatial patterns and general location of the different landcover classes
-# describe the general differences between predictions from each method
+rf_errorM$table
+nn_errorM$table
 
 #Analyzing predictions
 #cell count neural net
@@ -284,38 +285,33 @@ freq(nnet_prediction)
 freq(rf_prediction)
 
 #QUESTION 4
-# knowing each cell is 20x20m, what is the difference in area predicted to be algal blooms in each method?
 (freq(nnet_prediction)[1,2]*400)-(freq(rf_prediction)[1,2]*400)
-	# the difference in area is 24243200 more predicted algae in the neural network method
-# which method predicts a higher area of algal blooms?
 
 
 #QUESTION 5
-# create a raster that shows whether neural network and random forest predictions agree or disagree?
-# describe the spatial patterns you observe
-# where are these areas prone to disagreement between predictions
-
 diffRaster<-rf_prediction==nnet_prediction
 plot(diffRaster, col=c("firebrick","darkolivegreen2"), legend=FALSE, axes=FALSE)
-legend("bottomleft", legend=c("Predictions Disagree","Predictions Agree"), fill=c("firebrick", "darkolivegreen2"))
+legend("bottomleft", legend=c("Predictions Disagree","Predictions Agree"),
+fill=c("firebrick", "darkolivegreen2"))
 
-# the predictions are mainly the same for the two methods in the lake, except for some places where the algae seems to be bordered. the majority of disagreement is on land and it is frequent. 
 
 #QUESTION 6
 rf_errorM$table
 nn_errorM$table
-# what is the producers and users accuracy for algal blooms for both methods?
-# what is the producers and users accuracy for agriculture for both methods?
 
 #QUESTION 7
 # algal blooms are prone to occur in areas where sunlight, stagnant water, and excess nutrient inputs can promote growth. Visually, do you think the landcover around the lake contributes to the algal blooms? 
 # explain your answer
+	# it looks to me like the most algae is occurring in areas near forests. this could be explained by an excess of nutrients.
 # how would answer this question quantitatively using spatial analysis techniques?
+	# I would answer this question by creating a buffer around the algae and water to analyze what landcovers are most prominent when algae is and is not present. 
 
 #QUESTION 8
 # which prediction method would you use for a more formal quantitative analysis of question 7? 
+	# I would use random forests because it has a much higher accuracy.
 # what bias would you need to consider in the interpretation of your results?
-
+	#
+	
 #QUESTION 9
 # this type of prediction can only classify algal growth from a satellite measurement. what might be some of the issues with relying on satellites to observe the presence of algal blooms? 
 # what data and approaches might you use to predict whether an algal bloom is expected to occur in the future
