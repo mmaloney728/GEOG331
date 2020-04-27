@@ -80,8 +80,6 @@ plotRGB(allbandsCloudf,r=4, g=3, b=2,
         margins=TRUE,
         colNA="grey50")
 
-# QUESTION 1
-# describe the differences in reflected/emitted light across the land surface. what are some major differences that you notice in the different landcover classes?
 
 #set seed so samples always the same
 set.seed(50)
@@ -210,11 +208,6 @@ rf_errorM$table
 #look at the overall accuracy
 rf_errorM$overall
 
-# QUESTION 2
-# what landclasses have the highest rates of misclassification?
- # agriculture has the highest rate of misclassification. it is misclassified about 27% of the time, while the others are less than 10%. 
-# what sort of bias would this introduce if you used these predictions in an analysis
- # this would bias the data in that it would predict a lot less agricultural land than there actually is
 
 #Neural Networks approach
 #set up grid
@@ -293,21 +286,5 @@ fill=c("firebrick", "darkolivegreen2"))
 rf_errorM$table
 nn_errorM$table
 
-#QUESTION 7
-# algal blooms are prone to occur in areas where sunlight, stagnant water, and excess nutrient inputs can promote growth. Visually, do you think the landcover around the lake contributes to the algal blooms? 
-# explain your answer
-	# it looks to me like the most algae is occurring in areas near forests. this could be explained by an excess of nutrients.
-# how would answer this question quantitatively using spatial analysis techniques?
-	# I would answer this question by creating a buffer around the algae and water to analyze what landcovers are most prominent when algae is and is not present. 
-
-#QUESTION 8
-# which prediction method would you use for a more formal quantitative analysis of question 7? 
-	# I would use random forests because it has a much higher accuracy.
-# what bias would you need to consider in the interpretation of your results?
-	#
-	
-#QUESTION 9
-# this type of prediction can only classify algal growth from a satellite measurement. what might be some of the issues with relying on satellites to observe the presence of algal blooms? 
-# what data and approaches might you use to predict whether an algal bloom is expected to occur in the future
 
 
